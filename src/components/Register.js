@@ -30,6 +30,16 @@ class RegistrationForm extends Component {
        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
     };
 
+    handleSubmit = e => {
+       e.preventDefault();
+       this.props.form.validateFieldsAndScroll((err, values) => {
+           if (!err) {
+               console.log('Received values of form: ', values);
+           }
+       });
+    };
+
+
 
 
    render() {
