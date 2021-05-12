@@ -1,4 +1,3 @@
-import logo from '../assets/images/logo.svg';
 import TopBar from './TopBar';
 import Main from './Main'
 
