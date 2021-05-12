@@ -72,4 +72,4 @@ class NormalLoginForm extends Component {
 }
 
 const Login = Form.create({ name: 'normal_login' })(NormalLoginForm);
-Export default Login;
+export default Login;
