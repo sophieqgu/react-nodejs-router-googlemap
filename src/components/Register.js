@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Icon, Button } from 'antd';
+import { Link } from 'react-router-dom';
+import { API_ROOT } from '../constants';
 
 class RegistrationForm extends Component {
     state = {
       confirmDirty: false,
-      autoCompleteResult: [],
     };
 
 
@@ -35,11 +36,26 @@ class RegistrationForm extends Component {
        this.props.form.validateFieldsAndScroll((err, values) => {
            if (!err) {
                console.log('Received values of form: ', values);
+               fetch(`${API_ROOT}/signup`, {
+                  method: 'POST',
+                  body: JSON.stringify({
+                      username: values.username,
+                      password: values.password
+                  })
+               })
+              .then(response => {
+                  console.log(response);
+                  if(response.ok) {
+                      return response.text();
+                  }
+                  console.log('error')
+              })
+              .then(data => {
+                  console.log(data)
+              })
            }
        });
     };
-
-
 
 
    render() {
@@ -110,6 +126,7 @@ class RegistrationForm extends Component {
                  <Button type="primary" htmlType="submit">
                      Register
                  </Button>
+                 <p>I already have an account, go back to <Link to="/login">login</Link></p>
              </Form.Item>
          </Form>
 
