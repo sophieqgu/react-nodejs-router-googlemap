@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Form, Input, Icon, Button } from 'antd';
+import { Form, Input, Icon, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { API_ROOT } from '../constants';
 
@@ -48,10 +48,15 @@ class RegistrationForm extends Component {
                   if(response.ok) {
                       return response.text();
                   }
-                  console.log('error')
               })
               .then(data => {
-                  console.log(data)
+                  console.log(data);
+                  message.success("Registration success.")
+                  this.props.history.push('/login');
+              })
+              .catch(err => {
+                console.log(err);
+                message.error("Registration failed.")
               })
            }
        });
