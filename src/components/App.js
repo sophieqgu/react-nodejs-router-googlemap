@@ -17,21 +17,24 @@ class App extends Component {
 
   handleLogout = () => {
     localStorage.removeItem(TOKEN_KEY);
-    this.setState({ isLoggedIn: flase});
+    this.setState({ isLoggedIn: false});
   }
 
-  return (
-    <div className="App">
-      <TopBar
-          handleLogout={this.handleLogout}
-          isLoggedIn={this.state.isLoggedIn}
-      />
-      <Main
-          handleLoginSucceed={this.handleLoginSucceed}
-          isLoggedIn={this.state.isLoggedIn}
-      />
-    </div>
-  );
+  render() {
+    return (
+      <div className="App">
+        <TopBar
+            handleLogout={this.handleLogout}
+            isLoggedIn={this.state.isLoggedIn}
+        />
+        <Main
+            handleLoginSucceed={this.handleLoginSucceed}
+            isLoggedIn={this.state.isLoggedIn}
+        />
+      </div>
+    );
+  }
+
 }
 
 export default App;
