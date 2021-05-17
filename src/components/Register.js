@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Form, Input, Icon, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 import { API_ROOT } from '../constants';
@@ -139,4 +139,5 @@ class RegistrationForm extends Component {
    }
 }
 
-export const Register = Form.create({ name: 'register' })(RegistrationForm);
+const Register = Form.create({ name: 'register' })(RegistrationForm);
+export default Register;
