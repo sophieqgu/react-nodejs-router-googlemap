@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Tabs, Button, Spin, Row, Col } from 'antd';
+import { Tabs, Spin, Row, Col } from 'antd';
 import Gallery from './Gallery';
+import CreatePostButton from './CreatePostButton';
 
 import {
    GEO_OPTIONS,
@@ -75,7 +76,7 @@ class Home extends Component {
       });
     }
 
-    renderPosts = () => {
+    renderPosts = (type) => {
       const { isLoadingGeoLocation, isLoadingPosts, error, posts } = this.state;
       if (error) {
         return error;
@@ -114,16 +115,15 @@ class Home extends Component {
 
 
     render() {
-
-      const operations = <Button type="primary">Create New Post</Button>;
+      const operations = <CreatePostButton loadNearbyPosts={this.loadNearbyPosts}/>;
 
       return (
         <Tabs tabBarExtraContent={operations} className="main-tabs">
           <TabPane tab="Image Post" key="1">
-            {this.renderImagePosts()}
+            {this.renderPosts(POST_TYPE_IMAGE)}
           </TabPane>
           <TabPane tab="Video Post" key="2">
-          Content of tab 2
+            {this.renderPosts(POST_TYPE_VIDEO)}
           </TabPane>
           <TabPane tab="Map" key="3">
           Content of tab 3
