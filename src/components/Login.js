@@ -24,7 +24,8 @@ class NormalLoginForm extends Component {
                    })
                    .then((data) => {
                        console.log(data);
-
+                       this.props.handleLoginSucceed(data);
+                       message.success("Login success.")
 
                    })
                    .catch((err) => {
