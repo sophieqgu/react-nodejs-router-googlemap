@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, message } from 'antd';
 
 import CreatePostForm from './CreatePostForm';
+import { API_ROOT, AUTH_HEADER, TOKEN_KEY, POS_KEY } from '../constants';
 
 class CreatePostButton extends Component {
   state = {
@@ -17,6 +18,43 @@ class CreatePostButton extends Component {
 
   handleOk = () => {
     console.log('Clicked Create')
+    this.form.validateFields((err, values) => {
+      console.log(values);
+      if (!err) {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const { lat, lon } = JSON.parse(localStorage.getItem(POS_KEY));
+
+        const formData = new FormData();
+        formData.set('lat', lat);
+        formData.set('lon', lon);
+        formData.set('message', values.message);
+        formData.set('image', values.image[0].originFileObj);
+
+        this.setState({ confirmLoading: true });
+          fetch(`${API_ROOT}/post`, {
+             method: 'POST',
+             headers: {
+                 Authorization: `${AUTH_HEADER} ${token}`
+             },
+             body: formData,
+          })
+             .then((response) => {
+                 if (response.ok) {
+                     return this.props.loadNearbyPosts();
+                 }
+             })
+             .then(() => {
+                 this.setState({ visible: false, confirmLoading: false });
+                 this.form.resetFields();
+                 message.success('Post created successfully!');
+             })
+             .catch(e => {
+                 console.error(e);
+                 message.error('Failed to create post.');
+                 this.setState({ confirmLoading: false });
+             });
+           }
+    })
   };
 
   handleCancel = () => {

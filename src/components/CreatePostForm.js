@@ -2,6 +2,16 @@ import React, { Component } from 'react'
 import { Form, Input, Upload, Icon } from 'antd';
 
 class NormalCreatePostForm extends Component {
+  normFile = e => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e && e.fileList;
+  };
+
+  beforeUpload = () => false;
+
   render () {
     const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
