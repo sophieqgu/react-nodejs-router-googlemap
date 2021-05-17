@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
-import { Tabs, Button, Spin } from 'antd';
-import { GEO_OPTIONS, POS_KEY, API_ROOT, AUTH_HEADER, TOKEN_KEY } from '../constants';
+import { Tabs, Button, Spin, Row, Col } from 'antd';
 import Gallery from './Gallery';
+
+import {
+   GEO_OPTIONS,
+   POS_KEY,
+   API_ROOT,
+   AUTH_HEADER,
+   TOKEN_KEY,
+   POST_TYPE_IMAGE,
+   POST_TYPE_VIDEO,
+   POST_TYPE_UNKNOWN,
+} from '../constants';
+
 
 const { TabPane } = Tabs;
 
@@ -64,7 +75,7 @@ class Home extends Component {
       });
     }
 
-    renderImagePosts = () => {
+    renderPosts = () => {
       const { isLoadingGeoLocation, isLoadingPosts, error, posts } = this.state;
       if (error) {
         return error;
@@ -73,7 +84,17 @@ class Home extends Component {
       } else if (isLoadingPosts) {
           return <Spin tip="Loading posts..."/>
       } else if (posts.length > 0) {
-          const images = posts.map((post) => {
+          return type === POST_TYPE_IMAGE ? this.renderImagePosts() : this.renderVideoPosts();
+      } else {
+          return "No nearby posts";
+      }
+    }
+
+    renderImagePosts = () => {
+      const { posts } = this.state;
+      const images = posts
+         .filter((post) => post.type === POST_TYPE_IMAGE)
+         .map((post) => {
              return {
                  user: post.user,
                  src: post.url,
@@ -82,11 +103,12 @@ class Home extends Component {
                  thumbnailWidth: 400,
                  thumbnailHeight: 300,
              };
-          });
-          return <Gallery images={images}/>
-      } else {
-          return "No nearby posts";
-      }
+         });
+      return <Gallery images={images}/>
+    }
+
+    renderVideoPosts = () => {
+
     }
 
 
