@@ -9,7 +9,7 @@ class Main extends Component {
       return this.props.isLoggedIn ? <Redirect to="/home"/> : <Login handleLoginSucceed={this.props.handleLoginSucceed}/>;
     }
 
-    getsHome = () => {
+    getHome = () => {
       return this.props.isLoggedIn ? <Home /> : <Redirect to="/login"/>;
     }
 
