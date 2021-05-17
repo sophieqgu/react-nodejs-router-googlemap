@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Modal, Button, message } from 'antd';
 
+import CreatePostForm from './CreatePostForm';
+
 class CreatePostButton extends Component {
   state = {
     visible: false,
@@ -24,7 +26,9 @@ class CreatePostButton extends Component {
     });
   };
 
-
+  getFormRef = (formInstance) => {
+    this.form = formInstance;
+  }
 
   render () {
     const { visible, confirmLoading } = this.state;
@@ -41,6 +45,7 @@ class CreatePostButton extends Component {
              onCancel={this.handleCancel}
              confirmLoading={confirmLoading}
          >
+         <CreatePostForm ref={this.getFormRef} />
          </Modal>
       </div>
     )
