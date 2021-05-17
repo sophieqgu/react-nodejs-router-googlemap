@@ -18,11 +18,22 @@ class Gallery extends Component {
   }
 
   render() {
-     return (
-         <div>
-             Gallery
-         </div>
-     );
+    const images = this.props.images.map((image) => {
+       return {
+           ...image,
+           customOverlay: (
+               <div className="gallery-thumbnail">
+                   <div>{`${image.user}: ${image.caption}`}</div>
+               </div>
+           ),
+       };
+    });
+
+    return (
+       <div>
+           Gallery
+       </div>
+    );
   }
 }
 export default Gallery;
