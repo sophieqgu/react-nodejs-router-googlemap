@@ -6,18 +6,26 @@ import { TOKEN_KEY } from '../constants';
 
 class App extends Component {
   state = {
-     isLoggedIn: Boolean(localStorage.getItem(TOKEN_KEY)),
+    isLoggedIn: Boolean(localStorage.getItem(TOKEN_KEY)),
   }
 
   handleLoginSucceed = (token) => {
-       console.log('token --- ', token)
-       localStorage.setItem(TOKEN_KEY, token)
-       this.setState({ isLoggedIn: true });
+    console.log('token --- ', token)
+    localStorage.setItem(TOKEN_KEY, token)
+    this.setState({ isLoggedIn: true });
+  }
+
+  handleLogout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    this.setState({ isLoggedIn: flase});
   }
 
   return (
     <div className="App">
-      <TopBar />
+      <TopBar
+          handleLogout={this.handleLogout}
+          isLoggedIn={this.state.isLoggedIn}
+      />
       <Main
           handleLoginSucceed={this.handleLoginSucceed}
           isLoggedIn={this.state.isLoggedIn}
