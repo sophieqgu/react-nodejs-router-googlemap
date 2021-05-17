@@ -7,7 +7,9 @@ const { TabPane } = Tabs;
 class Home extends Component {
     state = {
       isLoadingGeoLocation: false,
-      error: ''
+      isLoadingPosts: false,
+      error: '',
+      posts: [],
     }
     componentDidMount() {
       console.log(navigator.geolocation);
@@ -34,6 +36,31 @@ class Home extends Component {
     onFailedLoadGeoLocation = () => {
       this.setState({ isLoadingGeoLocation: false, error: 'Failed to load geo location.' });
     }
+
+    loadNearbyPosts = () => {
+      const { lat, lon } = JSON.parse(localStorage.getItem(POS_KEY));
+      const token = localStorage.getItem(TOKEN_KEY);
+      this.setState({ isLoadingPosts: true, error: '' });
+      fetch(`${API_ROOT}/search?lat=${lat}&lon=${lon}&range=20000`, {
+        method: 'GET',
+        headers: { Authorization: `${AUTH_HEADER} ${token}` }
+      })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error('Failed to load post.');
+      })
+      .then((data) => {
+        console.log(data);
+        this.setState({ posts: data ? data : [], isLoadingPosts: false });
+      })
+      .catch((e) => {
+        console.error(e);
+        this.setState({ isLoadingPosts: false, error: e.message });
+      });
+    }
+
 
 
     render() {
