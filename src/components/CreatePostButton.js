@@ -38,22 +38,22 @@ class CreatePostButton extends Component {
              },
              body: formData,
           })
-             .then((response) => {
-                 if (response.ok) {
-                     return this.props.loadNearbyPosts();
-                 }
-             })
-             .then(() => {
-                 this.setState({ visible: false, confirmLoading: false });
-                 this.form.resetFields();
-                 message.success('Post created successfully!');
-             })
-             .catch(e => {
-                 console.error(e);
-                 message.error('Failed to create post.');
-                 this.setState({ confirmLoading: false });
-             });
-           }
+         .then((response) => {
+             if (response.ok) {
+                 return this.props.loadNearbyPosts();
+             }
+         })
+         .then(() => {
+             this.setState({ visible: false, confirmLoading: false });
+             this.form.resetFields();
+             message.success('Post created successfully!');
+         })
+         .catch(err => {
+             console.log(err);
+             message.error('Failed to create post.');
+             this.setState({ confirmLoading: false });
+         });
+       }
     })
   };
 

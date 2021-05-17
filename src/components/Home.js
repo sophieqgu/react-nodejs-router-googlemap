@@ -60,18 +60,18 @@ class Home extends Component {
         method: 'GET',
         headers: { Authorization: `${AUTH_HEADER} ${token}` }
       })
-      .then((response) => {
+      .then(response => {
         if (response.ok) {
           return response.json();
         }
         throw new Error('Failed to load post.');
       })
-      .then((data) => {
+      .then(data => {
         console.log(data);
         this.setState({ posts: data ? data : [], isLoadingPosts: false });
       })
-      .catch((e) => {
-        console.error(e);
+      .catch(err => {
+        console.log(err);
         this.setState({ isLoadingPosts: false, error: e.message });
       });
     }
@@ -94,8 +94,8 @@ class Home extends Component {
     renderImagePosts = () => {
       const { posts } = this.state;
       const images = posts
-         .filter((post) => post.type === POST_TYPE_IMAGE)
-         .map((post) => {
+         .filter(post => post.type === POST_TYPE_IMAGE)
+         .map(post => {
              return {
                  user: post.user,
                  src: post.url,
@@ -109,7 +109,21 @@ class Home extends Component {
     }
 
     renderVideoPosts = () => {
-
+      const { posts } = this.state;
+      return (
+        <Row gutter={30}>
+          {
+            posts
+             .filter(post => [POST_TYPE_VIDEO, POST_TYPE_UNKNOWN].includes(post.type))
+             .map(post => (
+                 <Col span={6} key={post.url}>
+                     <video src={post.url} controls={true} className="video-block"/>
+                     <p>{post.user}: {post.message}</p>
+                 </Col>
+             ))
+          }
+        </Row>
+      )
     }
 
 
