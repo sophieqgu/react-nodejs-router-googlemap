@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Button } from 'antd';
 import { GEO_OPTIONS, POS_KEY, API_ROOT, AUTH_HEADER, TOKEN_KEY } from '../constants';
+import Gallery from './Gallery';
 
 const { TabPane } = Tabs;
 
@@ -11,6 +12,7 @@ class Home extends Component {
       error: '',
       posts: [],
     }
+
     componentDidMount() {
       console.log(navigator.geolocation);
       if ("geolocation" in navigator) {
@@ -30,6 +32,7 @@ class Home extends Component {
       const { latitude, longitude } = position.coords;
       localStorage.setItem(POS_KEY, JSON.stringify({ lat: latitude, lon: longitude }));
       this.setState({ isLoadingGeoLocation: false, error: '' });
+      this.loadNearbyPosts();
     }
 
 
