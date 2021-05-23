@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Tabs, Spin, Row, Col } from 'antd';
+
 import Gallery from './Gallery';
 import CreatePostButton from './CreatePostButton';
+import AroundMap from './AroundMap';
+
 
 import {
    GEO_OPTIONS,
@@ -52,11 +55,12 @@ class Home extends Component {
       this.setState({ isLoadingGeoLocation: false, error: 'Failed to load geo location.' });
     }
 
-    loadNearbyPosts = () => {
-      const { lat, lon } = JSON.parse(localStorage.getItem(POS_KEY));
+    loadNearbyPosts = (center, radius) => {
+      const { lat, lon } = center ? center : JSON.parse(localStorage.getItem(POS_KEY));
+      const range = radius ? radius : 20;
       const token = localStorage.getItem(TOKEN_KEY);
       this.setState({ isLoadingPosts: true, error: '' });
-      fetch(`${API_ROOT}/search?lat=${lat}&lon=${lon}&range=20000`, {
+      return fetch(`${API_ROOT}/search?lat=${lat}&lon=${lon}&range=${range}`, {
         method: 'GET',
         headers: { Authorization: `${AUTH_HEADER} ${token}` }
       })
@@ -140,7 +144,14 @@ class Home extends Component {
             {this.renderPosts(POST_TYPE_VIDEO)}
           </TabPane>
           <TabPane tab="Map" key="3">
-          Content of tab 3
+            <AroundMap
+               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3CEh9DXuyjozqptVB5LA-dN7MxWWkr9s&v=3.exp&libraries=geometry,drawing,places"
+               loadingElement={<div style={{ height: `100%` }} />}
+               containerElement={<div style={{ height: `600px` }} />}
+               mapElement={<div style={{ height: `100%` }} />}
+               posts={this.state.posts}
+               loadPostsByTopic={this.loadNearbyPosts}
+            />
           </TabPane>
         </Tabs>
       );
