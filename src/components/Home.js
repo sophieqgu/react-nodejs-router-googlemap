@@ -72,7 +72,7 @@ class Home extends Component {
       })
       .catch(err => {
         console.log(err);
-        this.setState({ isLoadingPosts: false, error: e.message });
+        this.setState({ isLoadingPosts: false, error: err.message });
       });
     }
 
