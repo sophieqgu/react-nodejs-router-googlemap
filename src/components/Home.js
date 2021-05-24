@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Row, Col } from 'antd';
+import { Tabs, Spin, Row, Col, Radio } from 'antd';
 
 import Gallery from './Gallery';
 import CreatePostButton from './CreatePostButton';
@@ -15,6 +15,8 @@ import {
    POST_TYPE_IMAGE,
    POST_TYPE_VIDEO,
    POST_TYPE_UNKNOWN,
+   TOPIC_FACE,
+   TOPIC_AROUND
 } from '../constants';
 
 
@@ -26,6 +28,7 @@ class Home extends Component {
       isLoadingPosts: false,
       error: '',
       posts: [],
+      topic: TOPIC_AROUND
     }
 
     componentDidMount() {
@@ -130,30 +133,80 @@ class Home extends Component {
       )
     }
 
+    handleTopicChange = (e) => {
+        const topic = e.target.value;
+        this.setState({ topic });
+        if (topic === TOPIC_AROUND) {
+            this.loadNearbyPosts();
+        } else {
+            this.loadFacesAroundTheWolrd();
+        }
+    }
+
+    loadFacesAroundTheWolrd = () => {
+        const token = localStorage.getItem(TOKEN_KEY);
+        this.setState({ isLoadingPosts: true, error: '' });
+        return fetch(`${API_ROOT}/cluster?term=face`, {
+            method: 'GET',
+            headers: {
+                Authorization: `${AUTH_HEADER} ${token}`,
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to load posts');
+            })
+            .then(data => {
+                console.log(data);
+                this.setState({ posts: data ? data : [], isLoadingPosts: false });
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({ isLoadingPosts: false , error: err.message });
+            });
+    }
+
+    loadPostsByTopic = (center, radius) => {
+        if (this.state.topic === TOPIC_AROUND) {
+            return this.loadNearbyPosts(center, radius);
+        } else {
+            return this.loadFacesAroundTheWolrd();
+        }
+    }
+
 
 
     render() {
-      const operations = <CreatePostButton loadNearbyPosts={this.loadNearbyPosts}/>;
+      const operations = <CreatePostButton loadNearbyPosts={this.loadPostsByTopic}/>;
 
       return (
-        <Tabs tabBarExtraContent={operations} className="main-tabs">
-          <TabPane tab="Image Post" key="1">
-            {this.renderPosts(POST_TYPE_IMAGE)}
-          </TabPane>
-          <TabPane tab="Video Post" key="2">
-            {this.renderPosts(POST_TYPE_VIDEO)}
-          </TabPane>
-          <TabPane tab="Map" key="3">
-            <AroundMap
-               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3CEh9DXuyjozqptVB5LA-dN7MxWWkr9s&v=3.exp&libraries=geometry,drawing,places"
-               loadingElement={<div style={{ height: `100%` }} />}
-               containerElement={<div style={{ height: `600px` }} />}
-               mapElement={<div style={{ height: `100%` }} />}
-               posts={this.state.posts}
-               loadPostsByTopic={this.loadNearbyPosts}
-            />
-          </TabPane>
-        </Tabs>
+        <div>
+          <Radio.Group onChange={this.handleTopicChange} value={this.state.topic}>
+              <Radio value={TOPIC_AROUND}>Posts Around Me</Radio>
+              <Radio value={TOPIC_FACE}>Faces Around The World</Radio>
+          </Radio.Group>
+
+          <Tabs tabBarExtraContent={operations} className="main-tabs">
+            <TabPane tab="Image Post" key="1">
+              {this.renderPosts(POST_TYPE_IMAGE)}
+            </TabPane>
+            <TabPane tab="Video Post" key="2">
+              {this.renderPosts(POST_TYPE_VIDEO)}
+            </TabPane>
+            <TabPane tab="Map" key="3">
+              <AroundMap
+                 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3CEh9DXuyjozqptVB5LA-dN7MxWWkr9s&v=3.exp&libraries=geometry,drawing,places"
+                 loadingElement={<div style={{ height: `100%` }} />}
+                 containerElement={<div style={{ height: `600px` }} />}
+                 mapElement={<div style={{ height: `100%` }} />}
+                 posts={this.state.posts}
+                 loadPostsByTopic={this.loadPostsByTopic}
+              />
+            </TabPane>
+          </Tabs>
+        </div>
       );
    }
 }
